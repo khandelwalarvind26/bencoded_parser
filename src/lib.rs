@@ -145,14 +145,18 @@ impl Bencode {
     fn read_int(&mut self) -> Result<Element> {
 
         let mut fin: u64 = 0;
-
+        let mut mult = 1;
         // read integer until end char recieved
         while self.read_char() != 'e' {
+            if self.get_char() == '-' {
+                mult = -1;
+                continue;
+            }
             fin *= 10;
             fin += (self.get_char() as u8 - '0' as u8) as u64;
         }
 
-        Ok(Element::Integer(fin))
+        Ok(Element::Integer(fin*mult))
     }
 
 
