@@ -14,7 +14,7 @@ impl fmt::Display for InvalidCharError {
 #[derive(Debug)]
 pub enum Element {
     Dict(HashMap<String,Element>),
-    Integer(u64),
+    Integer(i64),
     ByteString(String),
     List(Vec<Element>)
 }
@@ -144,8 +144,8 @@ impl Bencode {
     // .'
     fn read_int(&mut self) -> Result<Element> {
 
-        let mut fin: u64 = 0;
-        let mut mult = 1;
+        let mut fin: i64 = 0;
+        let mut mult: i64 = 1;
         // read integer until end char recieved
         while self.read_char() != 'e' {
             if self.get_char() == '-' {
@@ -153,10 +153,10 @@ impl Bencode {
                 continue;
             }
             fin *= 10;
-            fin += (self.get_char() as u8 - '0' as u8) as u64;
+            fin += (self.get_char() as u8 - '0' as u8) as i64;
         }
-
-        Ok(Element::Integer(fin*mult))
+        fin *= mult;
+        Ok(Element::Integer(fin))
     }
 
 
